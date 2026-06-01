@@ -21,12 +21,12 @@ install)
     $PWD/scripts/vimrc.sh "${@: -1}"
   ;;
 
-  --brew)
-    $PWD/scripts/brew.sh "${@: -1}"
+  --base)
+    $PWD/scripts/os-base-setup.sh "${@: -1}"
   ;;
 
-  --brewsoftwares)
-    $PWD/scripts/brew-softwares.sh "${@: -1}"
+  --softwares)
+    $PWD/scripts/softwares.sh "${@: -1}"
   ;;
 
   --docker)
@@ -51,7 +51,8 @@ install)
 
   *)
     printf "Installing...\n\n"
-    $PWD/scripts/brew-softwares.sh "${@: -1}"
+    $PWD/scripts/os-base-setup.sh "${@: -1}"
+    $PWD/scripts/softwares.sh "${@: -1}"
     $PWD/scripts/vimrc.sh "${@: -1}"
     $PWD/scripts/docker.sh "${@: -1}"
     $PWD/scripts/gnu-softwares.sh "${@: -1}"
@@ -80,12 +81,12 @@ remove)
     $PWD/scripts/remove-gnu-softwares.sh
   ;;
 
-  --brewsoftwares)
-    $PWD/scripts/remove-brew-softwares.sh
+  --softwares)
+    $PWD/scripts/remove-softwares.sh
   ;;
 
-  --brew)
-    $PWD/scripts/remove-brew.sh
+  --base)
+    $PWD/scripts/remove-os-base.sh
   ;;
 
   --gitshortcuts)
@@ -105,8 +106,8 @@ remove)
     $PWD/scripts/remove-vimrc.sh
     $PWD/scripts/remove-docker.sh
     $PWD/scripts/remove-gnu-softwares.sh
-    $PWD/scripts/remove-brew-softwares.sh
-    $PWD/scripts/remove-brew.sh
+    $PWD/scripts/remove-softwares.sh
+    $PWD/scripts/remove-os-base.sh
     $PWD/scripts/remove-git-shortcuts.sh
     $PWD/scripts/remove-show-git-branch.sh
     $PWD/scripts/remove-bash-shortcuts.sh

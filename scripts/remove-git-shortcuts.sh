@@ -1,24 +1,22 @@
 #!/bin/bash
 
-printf "Removing git shortcuts..."
+SOURCE_PATH=$(dirname "$0")
+source "$SOURCE_PATH/utils.sh"
 
-if [ ! -e ~/.zprofile ]
+printf "Removing git shortcuts from $PROFILE_FILE...\n"
+
+if [ ! -e "$PROFILE_FILE" ]
 then
-  printf "You not even have a zprofile file! All done here!\n\n"
+  printf "Profile file not found! All done here!\n\n"
   exit 0
 fi
 
-if  [[ $(command grep -il "git commit" ~/.zprofile) = "" ]]
-then
-  printf "Cant find git shortcuts... All done here!\n\n"
-fi
-
-sed -i '' '/Git Shortcuts/d' ~/.zprofile
-sed -i '' '/git status/d' ~/.zprofile
-sed -i '' '/git add/d' ~/.zprofile
-sed -i '' '/git diff/d' ~/.zprofile
-sed -i '' '/git commit/d' ~/.zprofile
-sed -i '' '/git checkout/d' ~/.zprofile
-sed -i '' '/git pull/d' ~/.zprofile
+sed_inplace '/## Git Shortcuts ###/d' "$PROFILE_FILE"
+sed_inplace "/alias gs='git status'/d" "$PROFILE_FILE"
+sed_inplace "/alias ga='git add'/d" "$PROFILE_FILE"
+sed_inplace "/alias gd='git diff'/d" "$PROFILE_FILE"
+sed_inplace "/alias gc='git commit'/d" "$PROFILE_FILE"
+sed_inplace "/alias gp='git pull'/d" "$PROFILE_FILE"
+sed_inplace "/alias gch='git checkout'/d" "$PROFILE_FILE"
 
 printf "Git Shortcuts are gone\n\n"

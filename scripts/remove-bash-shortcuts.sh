@@ -1,19 +1,24 @@
 #!/bin/bash
 
-printf "Removing Bash shortcuts..."
+SOURCE_PATH=$(dirname "$0")
+source "$SOURCE_PATH/utils.sh"
 
-if [ ! -e ~/.zprofile ]
+printf "Removing Shell shortcuts from $PROFILE_FILE...\n"
+
+if [ ! -e "$PROFILE_FILE" ]
 then
-  printf "You not even have a zprofile file! All done here!\n\n"
+  printf "Profile file not found! All done here!\n\n"
   exit 0
 fi
 
-if  [[ $(command grep -il "ls -l" ~/.zprofile) = "" ]]
-then
-  printf "Cant find Z shortcuts... All done here!\n\n"
-fi
+sed_inplace '/## Shell Shortcuts ###/d' "$PROFILE_FILE"
+sed_inplace "/alias ll='ls -l'/d" "$PROFILE_FILE"
+sed_inplace "/alias v=/d" "$PROFILE_FILE"
+sed_inplace "/export LC_ALL=en_US.UTF-8/d" "$PROFILE_FILE"
 
-sed -i '' '/Z Shortcuts/d' ~/.zprofile
-sed -i '' '/ls -l/d' ~/.zprofile
-sed -i '' '/vim/d' ~/.zprofile
-printf "Z Shortcuts are gone\n\n"
+sed_inplace '/## Docker shortcuts ###/d' "$PROFILE_FILE"
+sed_inplace "/alias dps='docker ps'/d" "$PROFILE_FILE"
+sed_inplace "/alias dcu='docker compose up'/d" "$PROFILE_FILE"
+sed_inplace "/alias dcd='docker compose down'/d" "$PROFILE_FILE"
+
+printf "Shell Shortcuts are gone\n\n"

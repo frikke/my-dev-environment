@@ -1,35 +1,31 @@
 #!/bin/bash
 
-if [ ! -e ~/.zprofile ]
-then
-  printf "Cant find .bash_profile file.. creating one..\n"
-  touch ~/.zprofile
-  chmod 644 ~/.zprofile
-  printf ".zprofile created!\n\n"
-fi
+SOURCE_PATH=$(dirname "$0")
+source "$SOURCE_PATH/utils.sh"
 
-if  [[ $(command grep -il "ls -l" ~/.zprofile) != "" ]] && [[ "$1" != "-f" ]]
-then
-  printf "Looks like you already have some bash shortcuts in your Z profile..\nUse -f to remove them and re-add them.\n\n"
+if [[ $(grep -l "alias ll=" "$PROFILE_FILE" 2>/dev/null) != "" ]] && [[ "$1" != "-f" ]]; then
+  printf "Looks like you already have some bash shortcuts in your profile..\nUse -f to remove them and re-add them.\n\n"
 else
-
-  if [[ $(command grep -il "ls -l" ~/.zprofile) != "" ]]
-  then
-    printf "Removing actual bash shortcuts..."
-    $PWD/scripts/remove-bash-shortcuts.sh
+  if [[ $(grep -l "alias ll=" "$PROFILE_FILE" 2>/dev/null) != "" ]]; then
+    printf "Removing actual bash shortcuts...\n"
+    "$SOURCE_PATH/remove-bash-shortcuts.sh"
   fi
 
-  printf "Creating shortcuts...\n"
-  echo "" >> ~/.zprofile
-  echo "## Z Shortcuts ###" >> ~/.zprofile
-  echo "alias ll='ls -l'" >> ~/.zprofile
-  echo "alias v='/opt/homebrew/bin/vim'" >> ~/.zprofile
-  echo "alias composer='docker run --rm --interactive --tty --volume $PWD:/app composer'"
-  echo "LC_ALL=en_US.UTF-8" >> ~/.zprofile
-  echo "## Docker shortcuts ###" >> ~/.zprofile
-  echo "alias dps='docker ps'" >> ~/.zprofile
-  echo "alias dcu='docker compose up'" >> ~/.zprofile
-  echo "alias dcd='docker compose down'" >> ~/.zprofile
+  printf "Creating shortcuts in $PROFILE_FILE...\n"
+  
+  VIM_PATH=$(which vim)
+  
+  add_to_profile "## Shell Shortcuts ###"
+  add_to_profile "alias ll='ls -l'"
+  if [ -n "$VIM_PATH" ]; then
+    add_to_profile "alias v='$VIM_PATH'"
+  fi
+  add_to_profile "export LC_ALL=en_US.UTF-8"
+  
+  add_to_profile "## Docker shortcuts ###"
+  add_to_profile "alias dps='docker ps'"
+  add_to_profile "alias dcu='docker compose up'"
+  add_to_profile "alias dcd='docker compose down'"
+  
   printf "Shortcuts created!\n\n"
-
 fi

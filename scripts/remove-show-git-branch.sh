@@ -1,22 +1,25 @@
 #!/bin/bash
 
-printf "Removing show git branch..."
+SOURCE_PATH=$(dirname "$0")
+source "$SOURCE_PATH/utils.sh"
 
-if [ ! -e ~/.zprofile ]
+printf "Removing show git branch from $PROFILE_FILE...\n"
+
+if [ ! -e "$PROFILE_FILE" ]
 then
-  printf "You not even have a zprofile file! All done here!\n\n"
+  printf "Profile file not found! All done here!\n\n"
   exit 0
 fi
 
-if  [[ $(command grep -il "git commit" ~/.zprofile) = "" ]]
-then
-  printf "Cant find tricks to show git branch... All done here!\n\n"
+# Clean up the function and prompt configuration surgically
+# We remove the block from the header until the closing brace of the function
+if [[ "$OS_TYPE" == "macos" ]]; then
+    sed -i '' '/## Show git branch ###/,/^}$/d' "$PROFILE_FILE"
+    sed -i '' '/setopt PROMPT_SUBST/d' "$PROFILE_FILE"
+    sed -i '' '/PROMPT=%9c/d' "$PROFILE_FILE"
+else
+    sed -i '/## Show git branch ###/,/^}$/d' "$PROFILE_FILE"
+    sed -i '/export PS1=.*parse_git_branch/d' "$PROFILE_FILE"
 fi
 
-sed -i '' '/Show git branch/d' ~/.zprofile
-sed -i '' '/parse_git_branch()/d' ~/.zprofile
-sed -i '' '/git branch 2>/d' ~/.zprofile
-sed -i '' '/}/d' ~/.zprofile
-sed -i '' '/(parse_git_branch)/d' ~/.zprofile
-
-printf "Show git branch are gone\n\n"
+printf "Show git branch configuration is gone\n\n"
